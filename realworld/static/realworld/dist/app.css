@@ -1,0 +1,14 @@
+/* Unpoly styles */
+up-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999999999;
+  height: 4px;
+  background-color: #5cb85c;
+}
+
+/* realworld styles */
+.wrapper {
+  outline: none;
+}

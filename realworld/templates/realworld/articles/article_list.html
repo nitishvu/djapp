@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="home-page">
+  {% if not user.is_authenticated %}
+    <div class="banner">
+      <div class="container">
+        <h1 class="logo-font">conduit</h1>
+        <p>A place to share your knowledge.</p>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="container page">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="feed-toggle">
+          <ul class="nav nav-pills outline-active">
+            <li class="nav-item">
+              <a href="{% url 'articles:list' %}" class="nav-link{% if not 'own' in request.get_full_path and not 'tag' in request.get_full_path %} active{% endif %}">
+                <span>Global Articles</span>
+              </a>
+            </li>
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a href="{% url 'articles:list' %}?own" class="nav-link{% if 'own' in request.get_full_path %} active{% endif %}">
+                  <span>My Articles</span>
+                </a>
+              </li>
+            {% endif %}
+            {% if 'tag' in request.get_full_path %}
+              <li class="nav-item">
+                <a href="{{ request.get_full_path }}" class="nav-link{% if 'tag' in request.get_full_path %} active{% endif %}">
+                  <span>
+                    <i class="ion-pound"></i>
+                  </span>
+                  <span>{{ request.GET.tag }}</span>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+        {% for article in articles %}
+          {% include "realworld/articles/partials/article.html" %}
+        {% empty %}
+          <div class="article-preview">No articles are here... yet.</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-3">
+        <div class="sidebar">
+          <p>Popular Tags</p>
+          <div class="tag-list">
+            {% for tag in tags %}
+              <a href="{% url 'articles:list' %}?tag={{ tag.name }}" class="tag-pill tag-default">{{ tag }}</a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

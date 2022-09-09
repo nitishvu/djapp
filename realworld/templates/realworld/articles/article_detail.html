@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="article-page">
+  <div class="banner">
+    <div class="container">
+      <h1>{{ article.title }}</h1>
+      <div class="article-meta">
+        {% if article.author.image %}
+          <img src="{{ article.author.image }}" width="32px" height="100%" alt="author image" />
+        {% else %}
+          <img src="https://api.realworld.io/images/smiley-cyrus.jpeg" width="32px" height="100%" alt="author image" />
+        {% endif %}
+        <div class="info">
+          <a href="{{ article.author.get_absolute_url }}" class="author">
+            <span>{{ article.author.get_full_name }}</span>
+          </a>
+          <span class="date">{{ article.created|date:"F j, Y" }}</span>
+        </div>
+        {% if user == article.author %}
+          <a href="{% url 'articles:edit' article.id %}" class="btn btn-outline-secondary btn-sm">
+            <span>
+              <i class="ion-edit"></i>
+            </span>
+            <span>Edit Article</span>
+          </a>
+          <form action="{% url 'articles:delete' article.id %}" method="post" style="display:inline-block" up-confirm="Really delete?">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">
+              <span>
+                <i class="ion-trash-a"></i>
+              </span>
+              <span>Delete Article</span>
+            </button>
+          </form>
+        {% else %}
+          {% include "realworld/accounts/partials/follow_btn.html" with followed=article.author %}
+          {% include "realworld/articles/partials/favorite_btn.html" with is_favorite=article.is_favorite num_favorites=article.num_favorites %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="container page">
+    <div class="row article-content">
+      <div class="col-md-12">
+        <div>
+          <p>{{ article.summary }}</p>
+          {{ article.as_markdown|safe }}
+        </div>
+        {% with tags=article.tags.all %}
+          {% if tags %}
+            <ul class="tag-list">
+              {% for tag in tags %}
+                <li class="tag-default tag-pill tag-outline">
+                  <a href="{% url 'articles:list' %}?tag={{ tag.name }}">{{ tag }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+    <hr />
+    <div class="article-actions">
+      <div class="article-meta">
+        {% if article.author.image %}
+          <img src="{{ article.author.image }}" width="32px" height="100%" alt="author image" />
+        {% else %}
+          <img src="https://api.realworld.io/images/smiley-cyrus.jpeg" width="32px" height="100%" alt="author image" />
+        {% endif %}
+        <div class="info">
+          <a href="{{ article.author.get_absolute_url }}" class="author">
+            <span>{{ article.author.get_full_name }}</span>
+          </a>
+          <span class="date">{{ article.created|date:"F j, Y" }}</span>
+        </div>
+        {% if user == article.author %}
+          <a href="{% url 'articles:edit' article.id %}" class="btn btn-outline-secondary btn-sm">
+            <span>
+              <i class="ion-edit"></i>
+            </span>
+            <span>Edit Article</span>
+          </a>
+          <form action="{% url 'articles:delete' article.id %}" method="post" style="display:inline-block" up-confirm="Really delete?">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">
+              <span>
+                <i class="ion-trash-a"></i>
+              </span>
+              <span>Delete Article</span>
+            </button>
+          </form>
+        {% else %}
+          {% include "realworld/accounts/partials/follow_btn.html" with followed=article.author %}
+          {% include "realworld/articles/partials/favorite_btn.html" with is_favorite=article.is_favorite num_favorites=article.num_favorites %}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12 col-md-8 offset-md-2">
+        {% if user.is_authenticated %}
+          <div>
+            {% include "realworld/comments/comment_form.html" with form=comment_form %}
+          </div>
+        {% else %}
+          <p style="text-align:center">
+            <a href="{% url 'login' %}">Sign in</a>
+            or
+            <a href="{% url 'register' %}">sign up</a>
+            to add comments on this article.
+          </p>
+        {% endif %}
+        {% for comment in comments %}
+          <div>
+            {% include "realworld/comments/comment.html" %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
