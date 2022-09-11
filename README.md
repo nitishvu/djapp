@@ -52,3 +52,13 @@ To install and run locally:
   ```bash
     http://127.0.0.1:8000/
   ```
+
+
+build your image:
+gcloud builds submit --pack image=gcr.io/${PROJECT_ID}/realworld
+
+gcloud builds submit --pack image=gcr.io/summer-monument-359312/realworld
+
+run the django mirgration
+
+gcloud builds submit --config migrate.yaml

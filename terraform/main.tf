@@ -26,16 +26,22 @@ provider "google" {
 
 
 resource "google_sql_database_instance" "master" {
-name = "realworld-pg"
+name = "realw-app"
 database_version = "POSTGRES_13"
 region = "${var.region}"
 settings {
-tier = "db-f1-micro"
+tier = "db-custom-1-3840"
+user_labels = {
+      track        = "production"
+      billing-code = 34802
+      tier = "db-custom-1-3840"
+    }
+
 }
 }
 
 resource "google_sql_database" "database" {
-name = "realworld-pg-db1"
+name = "realwapp-db1"
 instance = "${google_sql_database_instance.master.name}"
 //charset = "utf8"
 //collation = "utf8_general_ci"
@@ -78,6 +84,7 @@ data "template_file" dbConnection_details{
    PROJECT_ID = "${var.project}"
    REGION = "${var.region}"
    GS_BUCKET_NAME = "${google_storage_bucket.static-site.name}"
+   DJ_ADMIN_PASSWORD = ""
   }
   
 }
@@ -111,6 +118,8 @@ resource "google_secret_manager_secret" "app-secret" {
 }
 
 
+
+
 resource "google_secret_manager_secret_version" "app-secret-1" {
   provider = google-beta
   secret      = google_secret_manager_secret.app-secret.id
@@ -120,5 +129,27 @@ resource "google_secret_manager_secret_version" "app-secret-1" {
     command = " rm   ${path.module}/.env"
     //when    = destroy
   }
+}
+
+resource "google_secret_manager_secret" "dj-admin-password" {
+  provider = google-beta
+
+  secret_id = "dj_admin_password"
+  labels = {
+    label = "django_admin_password"
+  }
+  replication {
+    automatic = true
+  }
+
+  depends_on = [google_project_service.secretmanager]
+}
+
+
+resource "google_secret_manager_secret_version" "dj-admin-password-1" {
+  provider = google-beta
+  secret      = google_secret_manager_secret.dj-admin-password.id
+  secret_data = var.dj_admin_password
+
 }
 
