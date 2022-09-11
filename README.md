@@ -55,10 +55,50 @@ To install and run locally:
 
 
 build your image:
+----------------
 gcloud builds submit --pack image=gcr.io/${PROJECT_ID}/realworld
 
 gcloud builds submit --pack image=gcr.io/summer-monument-359312/realworld
 
 run the django mirgration
-
+------------------------
 gcloud builds submit --config migrate.yaml
+
+
+Note: if you chose a region other than "us-central1", specify that value in your command:
+
+
+gcloud builds submit --config migrate.yaml \
+  --substitutions _REGION=us-central1
+
+
+deploy to cloud run
+------------------
+
+gcloud run deploy django-cloudrun \
+  --platform managed \
+  --region $REGION \
+  --image gcr.io/${PROJECT_ID}/myimage \
+  --set-cloudsql-instances ${PROJECT_ID}:${REGION}:myinstance \
+  --set-secrets APPLICATION_SETTINGS=application_settings:latest \
+  --service-account $SERVICE_ACCOUNT \
+  --allow-unauthenticated
+
+
+  gcloud run deploy django-cloudrun \
+  --platform managed \
+  --region us-central1 \
+  --image gcr.io/summer-monument-359312/realworld \
+  --set-cloudsql-instances summer-monument-359312:us-central1:realw-app \
+  --set-secrets APPLICATION_SETTINGS=application_settings:latest \
+  --service-account tf-gcp-compute-svcaccount@summer-monument-359312.iam.gserviceaccount.com \
+  --allow-unauthenticated
+
+
+
+  pushing code to gcloud repo
+
+  git remote add google ssh://nitishinvestor0863@gmail.com@source.developers.google.com:2022/p/summer-monument-359312/r/vullinitish
+
+
+  git push --all google
