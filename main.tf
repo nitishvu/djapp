@@ -20,6 +20,7 @@ data "google_project" "project" {
 
 variable "project" {
   type        = string
+  default     = "new-proj-362314"
   description = "Google Cloud Project ID"
 }
 
@@ -85,8 +86,16 @@ resource "google_sql_database_instance" "instance" {
   region           = "us-central1"
   settings {
     tier = "db-custom-1-3840"
+    backup_configuration {
+    enabled = true
+    start_time = "00:00"    // backup at midnight (GMT)
+    location   = var.region
+    }
+    
   }
+  
   deletion_protection = true
+ 
 }
 
 resource "google_sql_database" "database" {
