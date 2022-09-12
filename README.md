@@ -96,6 +96,9 @@ Deployment:
 - `cloudbuild-migrate.yaml`
   - django database migrations
 
+- `inline-cloudrnCD.yaml`
+  - contains all the above steps which is used as a pipline file
+
 
 
 # adding code to cloud source repo
@@ -105,3 +108,7 @@ Deployment:
 
 
 # testing pipeline
+
+# app url:
+
+- `https://gametracker-tpjhsr2ayq-uc.a.run.app/`
