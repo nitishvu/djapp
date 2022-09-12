@@ -102,3 +102,6 @@ Deployment:
 
 -  `git remote add google-dj-app-test ssh://nitishinvestor0863@gmail.com@source.developers.google.com:2022/p/new-proj-362314/r/dj-app-test`
 -  `git push --all google-dj-app-test`
+
+
+# testing pipeline
