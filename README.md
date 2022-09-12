@@ -1,5 +1,5 @@
 
-
+Sample follow below first time
 ## Provisioning, Migrations, and Deployment
 
 1. Create project with billing enabled, and configure gcloud for that project
